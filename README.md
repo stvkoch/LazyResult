@@ -87,3 +87,14 @@ Interface that you need implemented for $afterCallableLazy:
     boolean $afterCallableLazy(array $parameters, $callableLazy, array $resultByCallableLazy);
 
 
+
+Functions
+---------
+
+
+### result() ###
+
+Result obejct function run callableLazy, when the loop structure initializer the proxy run result(). In some case you like call result to receive lazy result from your callback or call callback withou loop structures.
+
+
+
