@@ -94,7 +94,7 @@ Functions
 
 ### result() ###
 
-Result obejct function run callableLazy, when the loop structure initializer the proxy run result(). In some case you like call result to receive lazy result from your callback or call callback withou loop structures.
+Result obejct function run callableLazy. When use resultLazy on loop structure, the loop structure run result funtion in first interation and receive values from callback. In some case you like call result() to receive lazy values from your callback or call callback withou loop structures.
 
 
 
