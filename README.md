@@ -1,7 +1,7 @@
 LazyResult
 ==========
 
-Proxy that run function when run loop interaction. Addicional you can configure before and after callbacks for instance use cache manager results.
+Proxy that only run function when result interacts with loop structures. Addicional you can configure before and after callbacks for instance use cache manager results.
 
 
 
