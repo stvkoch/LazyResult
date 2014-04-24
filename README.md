@@ -1,7 +1,7 @@
 LazyResult
 ==========
 
-Proxy that only run function when result interacts with loop structures. Addicional you can configure before and after callbacks, for instance use cache manager results.
+Proxy only call function when result interacts first time with loop structures. Addicional you can configure before and after callbacks, for instance, use cache manager results.
 
 
 
@@ -16,7 +16,7 @@ Proxy Lazy Load for one function or callback:
     $proxy = new \Lazy\Result(array('Model', 'find'));
     $lazyResult = $proxy(array('id'=>1)); //not run yeat
     ....
-    foreach($lazyResult as $value) { //find method is now run!
+    foreach($lazyResult as $value) { //in first interation find method is call!
         ....
     }
 
@@ -26,7 +26,7 @@ Proxy Lazy Load object:
     $proxy = new \Lazy\Result(array('Model'));
     $lazyResult = $proxy->find(array('id'=>1)); //not run yeat
     ....
-    foreach($lazyResult as $value) { //find method is now run!
+    foreach($lazyResult as $value) { //in first interation find method is call!
         ....
     }
 
@@ -37,7 +37,7 @@ Proxy Lazy Load object/or function with cache:
     $proxy = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set'));
     $lazyResult = $proxy->find(array('id'=>1)); //not run yeat
     ....
-    foreach($lazyResult as $value) { //find method is now run! but before Cache::get is run, if Cache::get not return result 'find' method is run and after Cache::set with array('id'=>1) more $result
+    foreach($lazyResult as $value) { //in first interation find method is call! but before Cache::get is run, if Cache::get not return result 'find' method is run and after Cache::set with array('id'=>1) more $result
         ....
     }
 
@@ -98,3 +98,10 @@ Result obejct function run callableLazy. When use resultLazy on loop structure, 
 
 
 
+
+
+Config global before and after callbacks
+----------------------------------------
+
+
+Maybe you like configurate before and after callbacks to run each time the proxy call the lazy callback.

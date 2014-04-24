@@ -18,7 +18,6 @@ class Model{
     static public function error()
     {
         throw new Exception("not run");
-        
     }
 
 }

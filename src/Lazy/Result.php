@@ -21,8 +21,8 @@ class Result extends \ArrayIterator {
     static public $globalBeforeCallback  = null;
     static public $globalAfterCallback   = null;
 
-    static public $beforeCallback        = null;
-    static public $afterCallback         = null;
+    public $beforeCallback        = null;
+    public $afterCallback         = null;
     
 
 

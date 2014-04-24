@@ -19,6 +19,16 @@ class LazyTest extends PHPUnit_Framework_TestCase
 
     public function testLazyCallFunc()
     {
+        
+        $proxy = new \Lazy\Result(array('Model', 'find'));
+        $lazyResult = $proxy(array(1));
+
+
+        $lazyResult = $proxy(array(2,3));
+        foreach ($lazyResult as $key => $value) {
+            $this->assertContains($value, array('world', 'hello'));
+        }
+
         $proxy = new \Lazy\Result(array('Model', 'find'), array('Cache','get'), array('Cache','set') );
         $lazyResult = $proxy(array(1));
 
@@ -45,6 +55,21 @@ class LazyTest extends PHPUnit_Framework_TestCase
     }
 
     public function testLazyObjectWithCache()
+    {
+        $proxy = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set') );
+        $lazyResult = $proxy->find(array('hit'=>1));
+        foreach ($lazyResult as $key => $value) {
+            $this->assertContains($value, array(11,12,13));
+        }
+
+        $lazyResult = $proxy->find(array(0,1));
+        foreach ($lazyResult as $key => $value) {
+            $this->assertContains($value,  array('foo', 'bar'));
+        }
+    }
+
+
+    public function testLazyObjectWithGlobalCache()
     {
         $proxy = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set') );
         $lazyResult = $proxy->find(array('hit'=>1));
