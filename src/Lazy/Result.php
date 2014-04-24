@@ -18,32 +18,40 @@ class Result extends \ArrayIterator {
     private $resultCallback     = null;
 
     //global
-    static public $getCacheCallback   = null;
-    static public $setCacheCallback   = null;
+    static public $globalBeforeCallback  = null;
+    static public $globalAfterCallback   = null;
+
+    static public $beforeCallback        = null;
+    static public $afterCallback         = null;
     
 
 
-    function __construct($resultCallback=null, $getCacheCallback=null, $setCacheCallback=null, $params=array()){
-        if(!is_null($getCacheCallback))
-            self::$getCacheCallback = $getCacheCallback;
+    function __construct($resultCallback=null, $beforeCallback=null, $afterCallback=null, $params=array()){
+        if(!is_null($beforeCallback))
+            $this->beforeCallback = $beforeCallback;
+        elseif (!is_null(self::$globalBeforeCallback))
+            $this->beforeCallback = self::$globalBeforeCallback;
 
         if(!is_null($resultCallback))
             $this->resultCallback = $resultCallback;
 
-        if(!is_null($setCacheCallback))
-            self::$setCacheCallback = $setCacheCallback;
+        if(!is_null($afterCallback))
+            $this->afterCallback = $afterCallback;
+        elseif (!is_null(self::$globalAfterCallback))
+            $this->afterCallback = self::$globalAfterCallback;
 
         $this->parameters = $params;
     }
 
     public function result(){
-        if(!is_null(self::$getCacheCallback)) 
-            $this->result = call_user_func_array(self::$getCacheCallback, $this->parameters);
+        if(!is_null($this->beforeCallback)){
+            $this->result = call_user_func($this->beforeCallback, $this->parameters, $this->resultCallback);
+        }
 
         if(empty($this->result)){
             $this->result = call_user_func_array($this->resultCallback, $this->parameters);
-            if(!is_null(self::$setCacheCallback)) 
-                call_user_func(self::$setCacheCallback, $this->parameters, $this->result);
+            if(!is_null($this->afterCallback)) 
+                call_user_func($this->afterCallback, $this->parameters, $this->resultCallback, $this->result);
         }
 
         return $this->result;
@@ -60,12 +68,12 @@ class Result extends \ArrayIterator {
 
 
     public function __invoke(){
-        $lazyResult = new self($this->resultCallback, self::$getCacheCallback, self::$setCacheCallback, func_get_args());
+        $lazyResult = new self($this->resultCallback, $this->beforeCallback, $this->afterCallback, func_get_args());
         return $lazyResult;
     }
 
-    public function __call($name, $params){
-        $lazyResult = new self(array($this->resultCallback[0], $name), self::$getCacheCallback, self::$setCacheCallback, $params);
+    public function __call($name, $params=array()){
+        $lazyResult = new self(array($this->resultCallback[0], $name), $this->beforeCallback, $this->afterCallback, $params);
         return $lazyResult;
     }
 }
