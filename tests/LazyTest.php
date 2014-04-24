@@ -38,7 +38,6 @@ class LazyTest extends PHPUnit_Framework_TestCase
         $proxy = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set') );
         $lazyResult = $proxy->one(1);
         $this->assertEquals('bar', $lazyResult->result());
-
         foreach ($lazyResult as $key => $value) {
             $this->assertEquals('bahbah', $lazyResult->result());
         }
@@ -49,7 +48,6 @@ class LazyTest extends PHPUnit_Framework_TestCase
     {
         $proxy = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set') );
         $lazyResult = $proxy->find(array('hit'=>1));
-
         foreach ($lazyResult as $key => $value) {
             $this->assertContains($value, array(11,12,13));
         }
