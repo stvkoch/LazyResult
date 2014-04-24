@@ -14,4 +14,10 @@ class Model{
         return $r[$id];
     }
 
+    public function error()
+    {
+        throw new Exception("not run");
+        
+    }
+
 }
