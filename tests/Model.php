@@ -8,13 +8,13 @@ class Model{
         return array_intersect_key($r, array_flip($params));
     }
 
-    public function one($id)
+    static public function one($id)
     {
         $r = array('foo', 'bar', 'world');
         return $r[$id];
     }
 
-    public function error()
+    static public function error()
     {
         throw new Exception("not run");
         
