@@ -5,7 +5,7 @@ Proxy that only run function when result interacts with loop structures. Addicio
 
 
 
-[![Build Status LazyResult stvkoch by travis-ci](https://travis-ci.org/stvkoch/LazyResult.svghttps://travis-ci.org/stvkoch/LazyResult)
+[![Build Status LazyResult stvkoch by travis-ci](https://travis-ci.org/stvkoch/LazyResult.svg)]
 
 
 Example
