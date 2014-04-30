@@ -105,3 +105,17 @@ Config global before and after callbacks
 
 
 Maybe you like configurate before and after callbacks to run each time the proxy call the lazy callback.
+
+
+    \Lazy\Result::$globalBeforeCallback = array('Cache', 'get');
+    \Lazy\Result::$globalAfterCallback = array('Cache', 'set');
+
+Now all proxy create use this hooks callbacks.
+
+
+
+
+
+Any question!
+
+
