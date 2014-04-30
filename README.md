@@ -53,9 +53,9 @@ Definition
 $callableLazy
 -------------
 
-\Lazy\Result object registe $callableLazy to run when result() function run. result() run when initialize foreach loop structure.
+\Lazy\Result object registe $callableLazy to run when result() function is called. Inside of \Lazy\Result object result() public method run when initialize foreach loop structure.
 
-$callableLazy receive parameters that you pass for you proxy
+$callableLazy receive parameters that you pass for you proxy object
 
 
 Example:
