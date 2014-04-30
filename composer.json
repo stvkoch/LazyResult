@@ -1,5 +1,5 @@
 {
-    "name": "stvkoch/LazyResult",
+    "name": "stvkoch/lazyresult",
     "type": "library",
     "description": "Proxy that Lazy call objects",
     "keywords": ["package", "Proxy", "LazyLoad"],
