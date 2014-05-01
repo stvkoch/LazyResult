@@ -42,6 +42,9 @@ Proxy Lazy Load object/or function with cache:
     }
 
 
+Way to access values from lazy result
+=====================================
+
 Definition
 ==========
 
