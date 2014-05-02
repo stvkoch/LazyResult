@@ -1,7 +1,7 @@
 LazyResult
 ==========
 
-Proxy only call function when result interacts first time with loop structures. Addicional you can configure before and after callbacks, for instance, use cache manager results.
+LazyResult are proxy design that only call function of registered object when result expected interact with loop structures or when your code try access properties of result. Addicional you can configure before and after callbacks, for instance, to use cache manager results.
 
 
 
@@ -13,8 +13,8 @@ Example
 
 Proxy Lazy Load for one function or callback:
 
-    $proxy = new \Lazy\Result(array('Model', 'find'));
-    $lazyResult = $proxy(array('id'=>1)); //not run yeat
+    $lazyObject = new \Lazy\Result(array('Model', 'find'));
+    $lazyResult = $lazyObject(array('id'=>1)); //not run yeat
     ....
     foreach($lazyResult as $value) { //in first interation find method is call!
         ....
@@ -23,8 +23,8 @@ Proxy Lazy Load for one function or callback:
 
 Proxy Lazy Load object:
 
-    $proxy = new \Lazy\Result(array('Model'));
-    $lazyResult = $proxy->find(array('id'=>1)); //not run yeat
+    $lazyObject = new \Lazy\Result(array('Model'));
+    $lazyResult = $lazyObject->find(array('id'=>1)); //not run yeat
     ....
     foreach($lazyResult as $value) { //in first interation find method is call!
         ....
@@ -34,8 +34,8 @@ Proxy Lazy Load object:
 
 Proxy Lazy Load object/or function with cache:
 
-    $proxy = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set'));
-    $lazyResult = $proxy->find(array('id'=>1)); //not run yeat
+    $lazyObject = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set'));
+    $lazyResult = $lazyObject->find(array('id'=>1)); //not run yeat
     ....
     foreach($lazyResult as $value) { //in first interation find method is call! but before Cache::get is run, if Cache::get not return result 'find' method is run and after Cache::set with array('id'=>1) more $result
         ....
@@ -44,6 +44,42 @@ Proxy Lazy Load object/or function with cache:
 
 Way to access values from lazy result
 =====================================
+
+You can access the results from LazyResult object with interaction loop, with access properties of original result object or call result() method of LazyResult object.
+
+    
+    class Model{
+        static function words(){
+            return 'LazyResult from model';
+        }
+        static function one($id){
+            return (object) array('id'=>$id, 'name'=>'Steven Koch', 'country'=>'Portugal');
+        }
+        static function all(){
+            return array(
+                (object) array('id'=>'1', 'name'=>'Steven Koch', 'country'=>'Portugal'),
+                (object) array('id'=>'2', 'name'=>'Joan Rodrigues', 'country'=>'France'),
+                (object) array('id'=>'3', 'name'=>'Hans De Groot', 'country'=>'Netherlands')
+            );
+        }
+        
+    }
+    //..
+    $lazyObject = new \Lazy\Result(array('Model'));
+    $lazyResult = $lazyObject->one(1); //not run yeat
+    echo $lazyResult->name; //now is call one on Model
+    //...
+    $lazyResult = $lazyObject->all(); //not run yeat
+    $arrayResult = $lazyResult->result(); //now is call one on Model
+    //or...
+    foreach($lazyResult as $item){
+        echo $item->name;
+    }
+    //...
+    $lazyResult = $lazyObject->words(); //not run yeat
+    echo "".$lazyResult; //now is call one on Model and return result from __toString
+
+
 
 Definition
 ==========
@@ -64,8 +100,8 @@ $callableLazy receive parameters that you pass for you proxy object
 Example:
 
     $lazyFunc = function($param1, $param2){...};
-    $proxy = new \Lazy\Result($lazyFunc);
-    $proxy($param1, $param2);
+    $lazyObject = new \Lazy\Result($lazyFunc);
+    $lazyObject($param1, $param2);
 
 
 
