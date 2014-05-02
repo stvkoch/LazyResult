@@ -3,6 +3,7 @@ LazyResult
 
 LazyResult are proxy design that only call function of registered object when result expected interact with loop structures or when your code try access properties of result. Addicional you can configure before and after callbacks, for instance, to use cache manager results.
 
+LazyResult can help your project in many ways, you can use LazyResult to manipulate caches, called to be late pre filters common action controllers.
 
 
 [![Build Status LazyResult stvkoch by travis-ci](https://travis-ci.org/stvkoch/LazyResult.svg)]
@@ -11,7 +12,7 @@ LazyResult are proxy design that only call function of registered object when re
 Example
 -------
 
-Proxy Lazy Load for one function or callback:
+Proxy Lazy Call for one function or callback:
 
     $lazyObject = new \Lazy\Result(array('Model', 'find'));
     $lazyResult = $lazyObject(array('id'=>1)); //not run yeat
@@ -21,7 +22,7 @@ Proxy Lazy Load for one function or callback:
     }
 
 
-Proxy Lazy Load object:
+Proxy Lazy Call object:
 
     $lazyObject = new \Lazy\Result(array('Model'));
     $lazyResult = $lazyObject->find(array('id'=>1)); //not run yeat
@@ -32,7 +33,7 @@ Proxy Lazy Load object:
 
 
 
-Proxy Lazy Load object/or function with cache:
+Proxy Lazy Call object/or function with cache:
 
     $lazyObject = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set'));
     $lazyResult = $lazyObject->find(array('id'=>1)); //not run yeat
@@ -40,6 +41,9 @@ Proxy Lazy Load object/or function with cache:
     foreach($lazyResult as $value) { //in first interation find method is call! but before Cache::get is run, if Cache::get not return result 'find' method is run and after Cache::set with array('id'=>1) more $result
         ....
     }
+
+
+
 
 
 Way to access values from lazy result
