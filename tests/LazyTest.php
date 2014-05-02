@@ -57,7 +57,7 @@ class LazyTest extends PHPUnit_Framework_TestCase
 
     public function testLazyObjectByPropResult()
     {
-        $proxy = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set'));
+        $proxy = new \Lazy\Result(array('Model'));
         $lazyResult = $proxy->oneObj('bar');
         $this->assertEquals('bar', $lazyResult->value);
         foreach ($lazyResult as $key => $value) {
