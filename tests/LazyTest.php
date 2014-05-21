@@ -13,7 +13,7 @@ class LazyTest extends PHPUnit_Framework_TestCase
     public function testInstance()
     {
         $instance = new \Lazy\Result(array('Model'));
-        $this->assertInstanceOf('\Lazy\Result', $instance);
+        $this->verifyInstanceResult($instance);
     }
 
 
@@ -59,6 +59,7 @@ class LazyTest extends PHPUnit_Framework_TestCase
     {
         $proxy = new \Lazy\Result(array('Model'));
         $lazyResult = $proxy->oneObj('bar');
+
         $this->assertEquals('bar', $lazyResult->value);
         foreach ($lazyResult as $key => $value) {
             $this->assertEquals('bahbah', $lazyResult->value);
@@ -66,10 +67,22 @@ class LazyTest extends PHPUnit_Framework_TestCase
 
     }
 
+    public function testLazyObjectByMethodResult()
+    {
+        $proxy = new \Lazy\Result(array('Model'));
+        $lazyResult = $proxy->oneObj('bar');
+
+        $this->verifyInstanceResult($lazyResult);
+        $this->assertEquals('bar', $lazyResult->value);
+        $this->assertEquals('bahbah', $lazyResult->get('bahbah'));
+    }
+
     public function testLazyObjectByStringResult()
     {
         $proxy = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set'));
         $lazyResult = $proxy->one(1);
+
+        $this->verifyInstanceResult($lazyResult);
         $this->assertEquals('bar', "$lazyResult");
         foreach ($lazyResult as $key => $value) {
             $this->assertEquals('bahbah', "$lazyResult");
@@ -81,6 +94,8 @@ class LazyTest extends PHPUnit_Framework_TestCase
     {
         $proxy = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set'));
         $lazyResult = $proxy->find(array('hit'=>1));
+
+        $this->verifyInstanceResult($lazyResult);
         foreach ($lazyResult as $key => $value) {
             $this->assertContains($value, array(11,12,13));
         }
@@ -89,6 +104,7 @@ class LazyTest extends PHPUnit_Framework_TestCase
         foreach ($lazyResult as $key => $value) {
             $this->assertContains($value, array('foo', 'bar'));
         }
+        $this->verifyInstanceResult($lazyResult);
     }
 
 
@@ -96,6 +112,7 @@ class LazyTest extends PHPUnit_Framework_TestCase
     {
         $proxy = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set'));
         $lazyResult = $proxy->find(array('hit'=>1));
+        $this->verifyInstanceResult($lazyResult);
         foreach ($lazyResult as $key => $value) {
             $this->assertContains($value, array(11,12,13));
         }
@@ -110,5 +127,10 @@ class LazyTest extends PHPUnit_Framework_TestCase
     {
         $proxy = new \Lazy\Result(array('Model'));
         $lazyResult = $proxy->error();
+    }
+
+    protected function verifyInstanceResult($result)
+    {
+        $this->assertInstanceOf('\Lazy\Result', $result);
     }
 }

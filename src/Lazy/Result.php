@@ -1,5 +1,7 @@
 <?php
+namespace Lazy;
 /*
+Lazy call method like proxy pattern. This is useful im MCV pattern when you need call severals filters before run the action.
 
 $finder = new \Lazy\Result(array('Model', 'find'), array('Cache','get'), array('Cache','set') );
 $result = $finder(array('id'=>1));
@@ -8,17 +10,16 @@ $result = $finder(array('id'=>1));
 $model = new \Lazy\Result(array('Model'), array('Cache','get'), array('Cache','set') );
 $result = $model->one(array('id'=>1));
 
-
 */
 
-namespace Lazy;
+require_once 'EmptyResult.php';
 
 class Result extends \ArrayIterator
 {
 
     private $result             = null;
     private $parameters         = array();
-    private $resultCallback     = null;
+    private $lazyCallback     = null;
 
     //global
     static public $globalBeforeCallback  = null;
@@ -29,7 +30,7 @@ class Result extends \ArrayIterator
     
 
 
-    public function __construct($resultCallback = null, $beforeCallback = null, $afterCallback = null, $params = array())
+    public function __construct($lazyCallback = null, $beforeCallback = null, $afterCallback = null, $params = array())
     {
         if (!is_null($beforeCallback)) {
             $this->beforeCallback = $beforeCallback;
@@ -37,15 +38,15 @@ class Result extends \ArrayIterator
             $this->beforeCallback = self::$globalBeforeCallback;
         }
 
-        if (!is_null($resultCallback)) {
-            $this->resultCallback = $resultCallback;
+        if (!is_null($lazyCallback)) {
+            $this->lazyCallback = $lazyCallback;
         }
         if (!is_null($afterCallback)) {
             $this->afterCallback = $afterCallback;
         } elseif (!is_null(self::$globalAfterCallback)) {
             $this->afterCallback = self::$globalAfterCallback;
         }
-
+        $this->result = new \Lazy\EmptyResult();
         $this->parameters = $params;
     }
 
@@ -55,17 +56,14 @@ class Result extends \ArrayIterator
     public function result()
     {
 
-        if (empty($this->result)) {
-
+        if ($this->result instanceof \Lazy\EmptyResult) {
             if (!is_null($this->beforeCallback)) {
-                $this->result = call_user_func($this->beforeCallback, $this->parameters, $this->resultCallback);
+                $this->result = call_user_func($this->beforeCallback, $this->parameters, $this->lazyCallback);
             }
-            if (empty($this->result)) {        
-                $this->result = call_user_func_array($this->resultCallback, $this->parameters);
+            $this->result = call_user_func_array($this->lazyCallback, $this->parameters);
 
-                if (!is_null($this->afterCallback)) {
-                    call_user_func($this->afterCallback, $this->parameters, $this->resultCallback, $this->result);
-                }
+            if (!is_null($this->afterCallback)) {
+                call_user_func($this->afterCallback, $this->parameters, $this->lazyCallback, $this->result);
             }
         }
 
@@ -107,13 +105,18 @@ class Result extends \ArrayIterator
 
     public function __invoke()
     {
-        $lazyResult = new self($this->resultCallback, $this->beforeCallback, $this->afterCallback, func_get_args());
+        $lazyResult = new self($this->lazyCallback, $this->beforeCallback, $this->afterCallback, func_get_args());
         return $lazyResult;
     }
 
     public function __call($name, $params = array())
     {
-        $lazyResult = new self(array($this->resultCallback[0], $name), $this->beforeCallback, $this->afterCallback, $params);
-        return $lazyResult;
+        if ($this->result instanceof \Lazy\EmptyResult) {
+            $lazyResult = new self(array($this->lazyCallback[0], $name), $this->beforeCallback, $this->afterCallback, $params);
+            return $lazyResult;
+        } elseif (method_exists($this->result(), $name)) {
+            return call_user_func_array(array($this->result(), $name), $params);
+        }
+        throw new \Exception("Method not exist on result");
     }
 }

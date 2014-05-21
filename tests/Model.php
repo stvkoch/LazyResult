@@ -18,13 +18,24 @@ class Model
 
     public static function oneObj($id)
     {
-        $r = new stdClass;
+        $r = new ModelResult;
         $r->value = $id;
         return $r;
     }
 
+
     public static function error()
     {
         throw new Exception("not run");
+    }
+}
+
+class ModelResult
+{
+    public $value;
+
+    public function get($value = '')
+    {
+        return $value;
     }
 }
